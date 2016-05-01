@@ -1,2 +1,13 @@
 # fluent-plugin-logio
-Log.io output plugin for Fluentd http://logio.org/
+[Log.io](http://logio.org/) output plugin for Fluentd.
+
+# Configuration
+
+```
+<match **>
+  @type logio
+  output_type json
+  host localhost
+  port 28777
+</match>
+```
