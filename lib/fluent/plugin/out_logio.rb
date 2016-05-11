@@ -41,7 +41,7 @@ module Fluent
 
       chain.next
     rescue => e
-      og.error "emit", :error_class => e.class, :error => e.to_s
+      log.error "emit", :error_class => e.class, :error => e.to_s
       log.error_backtrace
     end
   end
