@@ -25,7 +25,7 @@ module Fluent
       super
       puts @host
       puts @port
-      @socket = TCPSocket.open(@host, 28777)
+      @socket = TCPSocket.open(@host, @port)
     end
 
     def shutdown
