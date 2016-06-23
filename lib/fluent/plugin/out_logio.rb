@@ -1,3 +1,5 @@
+require 'socket'
+
 module Fluent
 
   class LogioOutput < Output
@@ -7,12 +9,6 @@ module Fluent
     config_param :output_type, :default => 'json'
     config_param :host, :string, :default => 'localhost'
     config_param :port, :integer, :default => 28777
-
-    def initialize
-      super
-
-      require 'socket'
-    end
 
     def configure(conf)
       super
