@@ -9,6 +9,12 @@ module Fluent
     config_param :output_type, :default => 'json'
     config_param :host, :string, :default => 'localhost'
     config_param :port, :integer, :default => 28777
+    config_param :node, :string, :default => nil
+    config_param :stream, :string, :default => nil
+    config_param :log_level, :string, :default => 'info'
+    config_param :node_key_name, :string, :default => 'hostname'
+    config_param :stream_key_name, :string, :default => nil
+    config_param :log_level_key_name, :string, :default => nil
 
     def configure(conf)
       super
@@ -31,9 +37,17 @@ module Fluent
     end
 
     def emit(tag, es, chain)
-      es.each {|time,record|
-        @socket.puts "+log|#{tag}|#{record[:hostname] or Socket.gethostname}||#{@formatter.format(tag, time, record).chomp}\r\n"
-      }
+      es.each do |time,record|
+        stream = @stream ? @stream : tag
+        node = @node ? @node : Socket.gethostname
+        logLevel = @log_level
+
+        stream = (record[@stream_key_name] or stream) if @stream_key_name
+        node = (record[@node_key_name] or node) if @node_key_name
+        logLevel = (record[@log_level_key_name] or logLevel) if @log_level_key_name
+
+        @socket.puts "+log|#{stream}|#{node}|#{logLevel}|#{@formatter.format(tag, time, record).chomp}\r\n"
+      end
 
       chain.next
     rescue => e
